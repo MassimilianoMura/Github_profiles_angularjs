@@ -20,18 +20,26 @@ describe('GitUserSearchController', function() {
     beforeEach(inject(function($httpBackend) {
       httpBackend = $httpBackend
       httpBackend
-        .when('GET', "https://api.github.com/search/users?q=hello")
+        .when('GET', "https://api.github.com/search/users?access_token=" + access_token + "&q=tansaku")
         .respond(
-          { items: items }
-          );
+          { items: tansaku }
+        );
+      httpBackend
+        .when('GET', "https://api.github.com/search/users?access_token=" + access_token + "&q=stephenlloyd")
+        .respond(
+          { items: steven }
+        );
     }));
 
-    var items = [
+    var tansaku = [
       {
         "login": "tansaku",
         "avatar_url": "https://avatars.githubusercontent.com/u/30216?v=3",
         "html_url": "https://github.com/tansaku"
-      },
+      }
+    ];
+
+    var steven = [
       {
         "login": "stephenlloyd",
         "avatar_url": "https://avatars.githubusercontent.com/u/196474?v=3",
@@ -40,11 +48,19 @@ describe('GitUserSearchController', function() {
     ];
 
     it('displays search results', function() {
-      ctrl.searchTerm = 'hello';
+      ctrl.searchTerm = 'tansaku';
       ctrl.doSearch();
       httpBackend.flush();
-      expect(ctrl.searchResult.items).toEqual(items);
+      expect(ctrl.searchResult.items).toEqual(tansaku);
     });
+
+    it('displays search results', function() {
+      ctrl.searchTerm = 'stephenlloyd';
+      ctrl.doSearch();
+      httpBackend.flush();
+      expect(ctrl.searchResult.items).toEqual(steven);
+    });
+
   });
 
 });
